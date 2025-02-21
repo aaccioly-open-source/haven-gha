@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"strings"
 
@@ -49,7 +50,7 @@ type Config struct {
 	ChatRelayWotDepth                int        `json:"chat_relay_wot_depth"`
 	ChatRelayWotRefreshIntervalHours int        `json:"chat_relay_wot_refresh_interval_hours"`
 	ChatRelayMinimumFollowers        int        `json:"chat_relay_minimum_followers"`
-	ChatRelayAllowKind4              bool   	`json:"chat_relay_allow_kind_4"`
+	ChatRelayAllowKind4              bool       `json:"chat_relay_allow_kind_4"`
 	OutboxRelayName                  string     `json:"outbox_relay_name"`
 	OutboxRelayNpub                  string     `json:"outbox_relay_npub"`
 	OutboxRelayDescription           string     `json:"outbox_relay_description"`
@@ -83,7 +84,7 @@ func loadConfig() Config {
 		RelayPort:                        getEnvInt("RELAY_PORT", 3355),
 		RelayBindAddress:                 getEnvString("RELAY_BIND_ADDRESS", "0.0.0.0"),
 		RelaySoftware:                    "https://github.com/bitvora/haven",
-		RelayVersion:                     "v1.0.5",
+		RelayVersion:                     getVersion(),
 		PrivateRelayName:                 getEnv("PRIVATE_RELAY_NAME"),
 		PrivateRelayNpub:                 getEnv("PRIVATE_RELAY_NPUB"),
 		PrivateRelayDescription:          getEnv("PRIVATE_RELAY_DESCRIPTION"),
@@ -115,6 +116,14 @@ func loadConfig() Config {
 		S3Config:                         getS3Config(),
 		GcpConfig:                        getGcpConfig(),
 	}
+}
+
+func getVersion() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "(devel)"
+	}
+	return info.Main.Version
 }
 
 func getAwsConfig() *AwsConfig {
