@@ -30,7 +30,7 @@ func main() {
 	green := "\033[32m"
 	reset := "\033[0m"
 	fmt.Println(green + art + reset)
-	log.Println("🚀 haven is booting up")
+	log.Println("🚀 HAVEN", config.RelayVersion, "is booting up")
 	fs = afero.NewOsFs()
 	fs.MkdirAll(config.BlossomPath, 0755)
 
